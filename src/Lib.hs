@@ -35,11 +35,13 @@ sigma S1 'e' = S2
 sigma S2 'w' = S3
 sigma _   _  = Serror
 
+start = S0
+
 -- | `accept` testet ob ein gegebener String von dem endlichen Automated
 -- akzeptiert wird. Es beginnt im Startzustand `S0` und wendet die
 -- Zustandsübergangfunktion auf die Zeichen des Strings an.
 accept :: String -> Bool
-accept word = (scan word S0) `elem` sAccept
+accept word = (scan word start) `elem` sAccept
   where scan :: String -> State -> State
         scan [] s = s
         scan (w:rest) s = scan rest (sigma s w)
