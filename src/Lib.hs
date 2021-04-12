@@ -1,6 +1,6 @@
 module Lib
     ( State(..)
-    , sigma
+    , delta
     , sAccept
     , accept
     ) where
@@ -22,26 +22,27 @@ data State = S0
            | Serror
   deriving (Eq, Show)
 
--- | `aAccept` ist die Liste von akzeptierenden Zuständen, in diesem Fall also
+-- | `sAccept` ist die Liste von akzeptierenden Zuständen, in diesem Fall also
 -- genau der Zustand `S3`.
 sAccept :: [State]
 sAccept = [S3]
 
--- | `sigma` ist die Zustandsübergangfunktion. Diese Funktion bildet einen
+-- | `delta` ist die Zustandsübergangfunktion. Diese Funktion bildet einen
 -- Zustand und ein Zeichen auf einen Nachfolgezustand ab.
-sigma :: State -> Char -> State
-sigma S0 'n' = S1
-sigma S1 'e' = S2
-sigma S2 'w' = S3
-sigma _   _  = Serror
+delta :: State -> Char -> State
+delta S0 'n' = S1
+delta S1 'e' = S2
+delta S2 'w' = S3
+delta _   _  = Serror
 
+start :: State
 start = S0
 
 -- | `accept` testet ob ein gegebener String von dem endlichen Automated
 -- akzeptiert wird. Es beginnt im Startzustand `S0` und wendet die
 -- Zustandsübergangfunktion auf die Zeichen des Strings an.
 accept :: String -> Bool
-accept word = (scan word start) `elem` sAccept
+accept word = scan word start `elem` sAccept
   where scan :: String -> State -> State
         scan [] s = s
-        scan (w:rest) s = scan rest (sigma s w)
+        scan (w:rest) s = scan rest (delta s w)
